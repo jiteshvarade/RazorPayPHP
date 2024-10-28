@@ -1,21 +1,35 @@
-FROM php:8.1-apache
+FROM php:8.2-fpm
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    unzip \
     git \
-    && docker-php-ext-install zip
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip
 
-WORKDIR /var/www/html
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+# Install PHP extensions
+RUN docker-php-ext-install mbstring exif pcntl bcmath gd
 
+# Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN composer install --optimize-autoloader --no-dev
+# Set working directory
+WORKDIR /var/www
 
-COPY .env.example .env
+# Copy existing application directory
+COPY . .
 
-RUN php artisan key:generate
+# Install dependencies
+RUN composer install
 
-EXPOSE 80
+# Set permissions
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+RUN chown -R www-data:www-data /var/www/storage
+RUN chmod -R 775 /var/www/storage
