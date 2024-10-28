@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: base64:aPIWEgi33Qj0itMN1DHIZTta4W/b3p7iMGDyzmYWSng=
