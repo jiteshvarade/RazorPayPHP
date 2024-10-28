@@ -11,3 +11,20 @@ services:
       APP_ENV: production
       APP_DEBUG: false
       APP_KEY: base64:aPIWEgi33Qj0itMN1DHIZTta4W/b3p7iMGDyzmYWSng=
+    networks:
+      - laravel-network
+
+  webserver:
+    image: php:8.1-apache
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "80:80"
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
