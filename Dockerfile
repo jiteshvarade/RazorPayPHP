@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
     git \
-    && docker-php-ext-configure zip --with-libzip \
     && docker-php-ext-install zip
 
 WORKDIR /var/www/html
